@@ -21,7 +21,7 @@ class ExpensesApp extends StatelessWidget {
       theme: tema.copyWith(
         colorScheme: tema.colorScheme.copyWith(
           primary: Colors.purple,
-          secondary: Colors.amber,
+          secondary: Colors.purple,
         ),
         textTheme: tema.textTheme.copyWith(
           headline6: const TextStyle(
@@ -52,24 +52,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
-      id: 't0',
-      title: 'Conta antiga',
-      value: 400.00,
-      date: DateTime.now().subtract(const Duration(days: 33)),
-    ),
-    Transaction(
-      id: 't1',
-      title: 'Aguá',
-      value: 310.76,
-      date: DateTime.now().subtract(const Duration(days: 3)),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Luz',
-      value: 200.00,
-      date: DateTime.now().subtract(const Duration(days: 4)),
-    ),
+    // Transaction(
+    //   id: 't0',
+    //   title: 'Conta antiga',
+    //   value: 400.00,
+    //   date: DateTime.now().subtract(const Duration(days: 33)),
+    // ),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -80,12 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction(String titleTransaction, double currencyTransaction) {
+  _addTransaction(
+      String titleTransaction, double currencyTransaction, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: titleTransaction,
       value: currencyTransaction,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -94,6 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     //Fechar Modal
     Navigator.of(context).pop();
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -124,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
               child: Chart(_recentTransactions),
             ),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _removeTransaction),
           ],
         ),
       ),
