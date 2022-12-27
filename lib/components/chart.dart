@@ -9,12 +9,15 @@ class Chart extends StatelessWidget {
   final List<Transaction> recentTransaction;
 
   List<Map<String, Object>> get groupedTransactions {
+    // * Definindo uma lista com limite de 7 elementos
     return List.generate(7, (index) {
       final weekDay = DateTime.now().subtract(
         Duration(days: index),
       );
 
+       
       double totalSum = 0.0;
+      // * Comparando se Dia/Mes/Ano da transação são == a Semana atual para exibição no gráfico
       for (var i = 0; i < recentTransaction.length; i++) {
         bool sameDay = recentTransaction[i].date.day == weekDay.day;
         bool sameMonth = recentTransaction[i].date.month == weekDay.month;
@@ -25,13 +28,15 @@ class Chart extends StatelessWidget {
         }
       }
 
+      // * Retornando dados Formatando Data
       return {
         'day': DateFormat.E().format(weekDay)[0],
         'value': totalSum,
       };
-    }).reversed.toList();
+    }).reversed.toList(); // * Invertendo ordem de exibição da Lista
   }
 
+  // * Calculando total gasto  
   double get _weekTotalValue {
     return groupedTransactions.fold(0.0, (sum, tr) {
       return sum + (tr['value'] as double);
@@ -53,6 +58,7 @@ class Chart extends StatelessWidget {
               child: ChartBar(
                 label: tr['day'] as String,
                 value: tr['value'] as double,
+                // * Calculando Porcentagem do gráfico semanal
                 percentage: _weekTotalValue == 0
                     ? 0
                     : (tr['value'] as double) / _weekTotalValue,

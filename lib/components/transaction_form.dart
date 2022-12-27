@@ -12,23 +12,27 @@ class TransactionForm extends StatefulWidget {
 }
 
 class _TransactionFormState extends State<TransactionForm> {
-  // Capturando dados do formulário
+  // * Capturando dados do formulário
   final _titleController = TextEditingController();
   final _valueController = TextEditingController();
   DateTime? _selectedDate = DateTime.now();
 
+  // * Função para cadastrar transações 
   _submitForm() {
     final titleTransaction = _titleController.text;
     final currencyTransaction = double.tryParse(_valueController.text) ?? 0.0;
 
+    // * Validando se algum campo do formulário esta Vazio
     if (titleTransaction.isEmpty ||
         currencyTransaction <= 0 ||
         _selectedDate == null) {
       return;
     }
+    // * Armazenando informações digitadas
     widget.onSubmit(titleTransaction, currencyTransaction, _selectedDate!);
   }
 
+  // * Exibindo Modal para seleção da DATA
   _showDatePicker() {
     showDatePicker(
       context: context,
@@ -76,6 +80,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 children: [
                   Expanded(
                     child: Text(
+                      // * Comparando se há alguma data selecionada
                       _selectedDate == null
                           ? 'Nenhuma data selecionada!'
                           : 'Data Selecionada ${DateFormat('dd/MM/y').format(_selectedDate!)}',

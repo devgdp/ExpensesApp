@@ -1,3 +1,4 @@
+// * Definindo Tipo de dados para o Modelo TRANSACTION
 class Transaction {
   final String id;
   final String title;

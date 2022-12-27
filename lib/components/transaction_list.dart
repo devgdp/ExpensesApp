@@ -12,6 +12,7 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 470,
+       // * Comparando se lista esta Vazia
       child: transactions.isEmpty
           ? Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -29,6 +30,7 @@ class TransactionList extends StatelessWidget {
                 ),
               ],
             )
+            // * Exibindo transações cadastradas
           : ListView.builder(
               itemCount: transactions.length,
               itemBuilder: (context, index) {
