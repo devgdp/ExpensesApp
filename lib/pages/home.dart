@@ -25,6 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //   date: DateTime.now().subtract(const Duration(days: 33)),
     // ),
   ];
+  bool _showChart = false;
 
   // * Definindo Limite de Dias para calculo semanal no gráfico
   List<Transaction> get _recentTransactions {
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
   _openTransactionFormModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (_) {
+      builder: (BuildContext context) {
         return TransactionForm(_addTransaction);
       },
     );
@@ -73,25 +74,50 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Despesas Pessoais'),
-        actions: [
+    bool isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final appBar = AppBar(
+      title: const Text('Despesas Pessoais'),
+      actions: [
+        if (isLandscape)
           IconButton(
-            icon: const Icon(Icons.add),
-            // * Chamando Modal de Cadastro da nova transação
-            onPressed: () => _openTransactionFormModal(context),
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart),
+            // * Alterando entre gráfico e lista de transações
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
           ),
-        ],
-      ),
+        IconButton(
+          icon: const Icon(Icons.add),
+          // * Chamando Modal de Cadastro da nova transação
+          onPressed: () => _openTransactionFormModal(context),
+        ),
+      ],
+    );
+
+    // * Calculando tamanho disponível da tela
+    final availableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              child: Chart(_recentTransactions),
-            ),
-            TransactionList(_transactions, _removeTransaction),
+            if (_showChart || !isLandscape)
+              SizedBox(
+                height: availableHeight * (isLandscape ? 0.65 : 0.3),
+                child: Chart(_recentTransactions),
+              ),
+            if (!isLandscape || !_showChart)
+              SizedBox(
+                  height: availableHeight * 0.7,
+                  child: TransactionList(_transactions, _removeTransaction)),
           ],
         ),
       ),

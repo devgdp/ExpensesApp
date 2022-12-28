@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import '../models/transaction.dart';
 
@@ -12,25 +13,32 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 470,
-       // * Comparando se lista esta Vazia
+      // * Comparando se lista esta Vazia
       child: transactions.isEmpty
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  'Nenhuma Transação Cadastrada',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                SizedBox(
-                  height: 200,
-                  child: Image.asset(
-                    'assets/images/waiting.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
+          ? LayoutBuilder(
+              builder: (ctx, constraints) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      height: constraints.maxHeight * 0.2,
+                      child: Text(
+                        'Nenhuma Transação Cadastrada',
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    ),
+                    SizedBox(
+                      height: constraints.maxHeight * 0.4,
+                      child: Image.asset(
+                        'assets/images/waiting.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                );
+              },
             )
-            // * Exibindo transações cadastradas
+          // * Exibindo transações cadastradas
           : ListView.builder(
               itemCount: transactions.length,
               itemBuilder: (context, index) {
